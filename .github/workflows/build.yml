@@ -13,15 +13,27 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Unzip source
-        run: unzip Will_Sports_Wii_Source.zip
+        run: |
+          unzip -o Will_Sports_Wii_Source.zip
+          ls -la
+          find . -maxdepth 3 -type f
 
       - name: Build
         run: |
           cd Will_Sports_Wii_Source
-          make
+          make clean || true
+          make all
+          echo "FILES AFTER BUILD:"
+          find . -type f
+
+      - name: Find boot.dol
+        run: |
+          mkdir -p artifact
+          find . -name "boot.dol" -exec cp {} artifact/boot.dol \;
+          ls -la artifact
 
       - name: Upload boot.dol
         uses: actions/upload-artifact@v4
         with:
           name: boot-dol
-          path: Will_Sports_Wii_Source/boot.dol
+          path: artifact/boot.dol
