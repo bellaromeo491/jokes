@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wii Boot DOL Converter</title>
+    <title>Wii Boot DOL Converter - Simple</title>
     <style>
         * {
             margin: 0;
@@ -12,19 +12,23 @@
         }
 
         body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            color: #00ff00;
         }
 
         .container {
-            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            max-width: 500px;
             width: 100%;
+            text-align: center;
             animation: slideIn 0.5s ease-out;
         }
 
@@ -39,781 +43,419 @@
             }
         }
 
-        .terminal-header {
-            background: #000;
-            border: 2px solid #00ff00;
-            border-radius: 8px 8px 0 0;
-            padding: 15px;
-            border-bottom: none;
-        }
-
-        .terminal-title {
-            font-size: 14px;
-            color: #00ff00;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-        }
-
-        .terminal-info {
-            font-size: 11px;
-            color: #00aa00;
-            opacity: 0.7;
-        }
-
-        .terminal-body {
-            background: #000;
-            border: 2px solid #00ff00;
-            border-radius: 0 0 8px 8px;
-            padding: 25px;
-            min-height: 700px;
-            overflow-y: auto;
-        }
-
-        .section {
-            margin-bottom: 30px;
-            border-bottom: 1px solid #00ff00;
-            padding-bottom: 20px;
-        }
-
-        .section:last-child {
-            border-bottom: none;
-        }
-
-        .section-title {
-            color: #ffff00;
-            font-size: 14px;
+        .title {
+            font-size: 36px;
+            color: #667eea;
+            margin-bottom: 10px;
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
         }
 
-        .section-subtitle {
-            color: #00ff00;
-            font-size: 12px;
-            margin: 10px 0;
-            text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            color: #00ff00;
-            font-size: 12px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        input[type="text"],
-        input[type="file"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            background: #001a00;
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-        }
-
-        input[type="text"]::placeholder,
-        textarea::placeholder {
-            color: #005500;
-        }
-
-        textarea {
-            min-height: 80px;
-            resize: vertical;
+        .subtitle {
+            font-size: 16px;
+            color: #999;
+            margin-bottom: 40px;
         }
 
         .file-drop-zone {
-            border: 2px dashed #00ff00;
-            padding: 30px;
-            border-radius: 4px;
-            text-align: center;
-            background: #001a00;
+            border: 3px dashed #667eea;
+            padding: 60px 30px;
+            border-radius: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 15px;
+            background: #f8f9ff;
+            margin-bottom: 30px;
         }
 
         .file-drop-zone:hover {
-            background: #003300;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            background: #f0f2ff;
+            border-color: #764ba2;
         }
 
         .file-drop-zone.dragover {
-            background: #004400;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+            background: #e8ebff;
+            border-color: #764ba2;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .drop-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
         }
 
         .drop-text {
-            color: #00ff00;
-            font-size: 12px;
-            margin-bottom: 10px;
+            font-size: 16px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
         }
 
-        .file-list {
-            background: #001a00;
-            border: 1px solid #00ff00;
+        .drop-subtext {
+            font-size: 13px;
+            color: #999;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            font-size: 14px;
+            color: #667eea;
+            margin-top: 15px;
             padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-
-        .file-item {
-            color: #00ff00;
-            font-size: 11px;
-            padding: 5px;
-            border-bottom: 1px dotted #005500;
-        }
-
-        .file-item:last-child {
-            border-bottom: none;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            color: #00ff00;
-            font-size: 12px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        input[type="checkbox"] {
-            margin-right: 8px;
-            cursor: pointer;
+            background: #f0f2ff;
+            border-radius: 8px;
+            word-break: break-all;
+            font-weight: 600;
         }
 
         .button-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            justify-content: center;
             flex-wrap: wrap;
-            margin-top: 20px;
         }
 
         button {
-            padding: 12px 24px;
-            background: #00ff00;
-            color: #000;
+            padding: 14px 40px;
             border: none;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        button:hover:not(:disabled) {
-            background: #00ff00;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
-            transform: scale(1.05);
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+            min-width: 200px;
         }
 
-        button:active:not(:disabled) {
-            transform: scale(0.95);
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
-        button:disabled {
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
 
         .btn-secondary {
-            background: #ffff00;
-            color: #000;
-            box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
+            background: #f0f0f0;
+            color: #333;
+            min-width: 150px;
         }
 
-        .btn-secondary:hover:not(:disabled) {
-            background: #ffff00;
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.6);
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-danger {
-            background: #ff4444;
-            color: white;
-            box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
-        }
-
-        .btn-danger:hover:not(:disabled) {
-            background: #ff4444;
-            box-shadow: 0 0 20px rgba(255, 68, 68, 0.6);
-        }
-
-        .output-box {
-            background: #001a00;
-            border: 1px solid #00ff00;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 15px;
-            max-height: 250px;
-            overflow-y: auto;
-            font-size: 11px;
-            line-height: 1.5;
-            color: #00ff00;
-        }
-
-        .output-line {
-            margin-bottom: 5px;
-        }
-
-        .output-line.error {
-            color: #ff4444;
-        }
-
-        .output-line.warning {
-            color: #ffff00;
-        }
-
-        .output-line.success {
-            color: #00ff00;
-        }
-
-        .progress-bar {
-            background: #001a00;
-            border: 1px solid #00ff00;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-        }
-
-        .progress-fill {
-            background: linear-gradient(90deg, #00ff00, #00aa00);
-            height: 20px;
-            border-radius: 2px;
-            width: 0%;
-            transition: width 0.3s ease;
+        .status-box {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #000;
-            font-size: 10px;
-            font-weight: bold;
+            text-align: center;
         }
 
-        .file-info {
-            background: #001a00;
-            border: 1px solid #00ff00;
-            padding: 12px;
-            border-radius: 4px;
-            margin-top: 10px;
-            font-size: 11px;
-        }
-
-        .file-info-line {
-            margin-bottom: 5px;
-            color: #00ff00;
-        }
-
-        .file-info-line .label {
-            color: #ffff00;
-            font-weight: bold;
-        }
-
-        .info-box {
-            background: #001a00;
-            border-left: 3px solid #ffff00;
-            padding: 12px;
-            margin-top: 20px;
-            font-size: 11px;
-            color: #ffff00;
+        .status-text {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
             line-height: 1.6;
         }
 
-        .code-block {
-            background: #001a00;
-            border: 1px solid #00ff00;
-            padding: 12px;
-            border-radius: 4px;
-            margin-top: 10px;
-            font-size: 11px;
-            color: #00ff00;
-            overflow-x: auto;
-            max-height: 150px;
-            overflow-y: auto;
+        .status-text.success {
+            color: #4caf50;
         }
 
-        .hex-preview {
-            background: #001a00;
-            border: 1px solid #00ff00;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
-            font-size: 10px;
-            color: #00ff00;
-            word-break: break-all;
-            max-height: 100px;
-            overflow-y: auto;
+        .status-text.error {
+            color: #f44336;
         }
 
-        @media (max-width: 768px) {
-            .terminal-body {
-                padding: 15px;
+        .status-text.processing {
+            color: #ff9800;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #667eea;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
             }
 
-            .section-title {
-                font-size: 12px;
+            .title {
+                font-size: 28px;
+            }
+
+            .file-drop-zone {
+                padding: 40px 20px;
+            }
+
+            .drop-icon {
+                font-size: 40px;
             }
 
             button {
-                padding: 10px 20px;
-                font-size: 11px;
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+
+            .btn-primary {
+                min-width: auto;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="terminal-header">
-            <div class="terminal-title">🎮 WII BOOT DOL CONVERTER v2.0</div>
-            <div class="terminal-info">> Convert ZIP files to Wii boot.dol executable</div>
+        <h1 class="title">🎮 Wii Boot DOL</h1>
+        <p class="subtitle">ZIP to boot.dol Converter</p>
+
+        <div class="file-drop-zone" id="dropZone">
+            <div class="drop-icon">📦</div>
+            <div class="drop-text">Drop ZIP File Here</div>
+            <div class="drop-subtext">or click to browse</div>
+            <input type="file" id="zipFile" accept=".zip" />
         </div>
 
-        <div class="terminal-body">
-            <!-- Section 1: ZIP File Input -->
-            <div class="section">
-                <div class="section-title">📦 Upload ZIP File</div>
-                <div class="section-subtitle">Select a ZIP file containing game files or homebrew application</div>
-                
-                <div class="file-drop-zone" id="dropZone">
-                    <div class="drop-text">📁 Drag & drop ZIP file here or click to select</div>
-                    <input type="file" id="zipFile" accept=".zip" style="display:none;" />
-                </div>
+        <div id="fileName" class="file-name" style="display:none;"></div>
 
-                <div id="fileList"></div>
-            </div>
+        <div class="button-group">
+            <button class="btn-primary" id="convertBtn" disabled>Convert to boot.dol</button>
+            <button class="btn-secondary" id="resetBtn">Reset</button>
+        </div>
 
-            <!-- Section 2: Game Configuration -->
-            <div class="section">
-                <div class="section-title">⚙️ Game Configuration</div>
-                <div class="section-subtitle">Configure Wii boot.dol parameters</div>
+        <div class="status-box" id="statusBox">
+            <div class="status-text">Ready to convert</div>
+        </div>
 
-                <div class="form-group">
-                    <label>Game Title</label>
-                    <input type="text" id="gameTitle" placeholder="My Wii Game" />
-                </div>
-
-                <div class="form-group">
-                    <label>Game ID (4 characters, e.g., ABCD)</label>
-                    <input type="text" id="gameID" placeholder="GAME" maxlength="4" />
-                </div>
-
-                <div class="form-group">
-                    <label>Entry Point Address (Hex)</label>
-                    <input type="text" id="entryPoint" placeholder="80003100" maxlength="8" />
-                </div>
-
-                <div class="checkbox-label">
-                    <input type="checkbox" id="isHomebrew" checked />
-                    Homebrew Application (Check if custom app)
-                </div>
-
-                <div class="checkbox-label">
-                    <input type="checkbox" id="autoDetect" />
-                    Auto-detect format from ZIP contents
-                </div>
-            </div>
-
-            <!-- Section 3: DOL File Selection -->
-            <div class="section">
-                <div class="section-title">🔍 DOL File in Archive</div>
-                <div class="section-subtitle">Select main executable from ZIP contents</div>
-
-                <div class="form-group">
-                    <label>Main DOL File</label>
-                    <select id="dolFileSelect">
-                        <option value="">-- Scan ZIP for DOL files --</option>
-                    </select>
-                </div>
-
-                <div id="foundDOLs" class="file-list" style="display:none;"></div>
-            </div>
-
-            <!-- Section 4: Data Sections -->
-            <div class="section">
-                <div class="section-title">💾 Data Sections Configuration</div>
-                <div class="section-subtitle">Configure code and data sections</div>
-
-                <div class="form-group">
-                    <label>Text Section 0 Address (Code)</label>
-                    <input type="text" id="text0Addr" placeholder="80004000" maxlength="8" />
-                </div>
-
-                <div class="form-group">
-                    <label>Data Section 0 Address (Data)</label>
-                    <input type="text" id="data0Addr" placeholder="80450000" maxlength="8" />
-                </div>
-
-                <div class="form-group">
-                    <label>BSS Address (Uninitialized Memory)</label>
-                    <input type="text" id="bssAddr" placeholder="80600000" maxlength="8" />
-                </div>
-            </div>
-
-            <!-- Section 5: Advanced Options -->
-            <div class="section">
-                <div class="section-title">⚙️ Advanced Options</div>
-
-                <div class="checkbox-label">
-                    <input type="checkbox" id="stripFiles" />
-                    Strip unnecessary files from archive
-                </div>
-
-                <div class="checkbox-label">
-                    <input type="checkbox" id="compressData" />
-                    Compress data sections
-                </div>
-
-                <div class="checkbox-label">
-                    <input type="checkbox" id="verifyChecksum" checked />
-                    Verify/Recalculate checksums
-                </div>
-
-                <div class="form-group">
-                    <label>Additional Metadata (Optional)</label>
-                    <textarea id="metadata" placeholder="Region: NTSC-U&#10;Version: 1.0"></textarea>
-                </div>
-            </div>
-
-            <!-- Section 6: Conversion Progress -->
-            <div class="section">
-                <div class="section-title">🔄 Conversion Progress</div>
-
-                <div class="button-group">
-                    <button onclick="scanZIP()">🔍 Scan ZIP Contents</button>
-                    <button onclick="convertToDOL()">✓ Convert to boot.dol</button>
-                    <button class="btn-secondary" onclick="previewDOL()">👁️ Preview</button>
-                    <button class="btn-danger" onclick="resetForm()">⟲ Reset</button>
-                </div>
-
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width: 0%;">0%</div>
-                </div>
-
-                <div id="output" class="output-box"></div>
-            </div>
-
-            <!-- Section 7: Output Information -->
-            <div class="section">
-                <div class="section-title">📊 Generated File Information</div>
-                <div id="dolStats" class="file-info"></div>
-            </div>
-
-            <!-- Section 8: DOL Structure Reference -->
-            <div class="section">
-                <div class="section-title">📖 Wii DOL File Format</div>
-                <div class="code-block">
-[DOL HEADER - 0x100 bytes]
-Text Offsets:   0x00-0x1C (7 sections × 4 bytes)
-Data Offsets:   0x20-0x3C (11 sections × 4 bytes)
-Addresses:      0x40-0x9C (18 sections × 4 bytes)
-Sizes:          0xA0-0xFC (18 sections × 4 bytes)
-BSS Address:    0xD8-0xDB
-BSS Size:       0xDC-0xDF
-Entry Point:    0xE0-0xE3
-
-[DOL CODE]
-Text sections (executable code)
-Data sections (initialized data)
-BSS section (uninitialized memory)
-                </div>
-            </div>
-
-            <!-- Section 9: Info Box -->
-            <div class="info-box">
-                <div style="margin-bottom: 10px;">ℹ️ <strong>Wii Boot DOL Converter:</strong></div>
-                <div>
-                    Convert ZIP archives containing game or homebrew application files into Wii-compatible boot.dol executables. 
-                    The converter automatically scans ZIP contents, extracts DOL files, configures memory sections, and generates 
-                    a ready-to-run boot.dol file compatible with Wii consoles.
-                </div>
+        <div id="progressContainer" style="display:none; margin-top: 20px;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
             </div>
         </div>
+
+        <p class="info-text">
+            ℹ️ Simply upload your ZIP file and we'll automatically extract the DOL file and create a Wii-compatible boot.dol executable.
+        </p>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <script>
-        let currentZipFile = null;
-        let zipContents = {};
+        let selectedFile = null;
+        let extractedDOL = null;
 
-        const log = (message, type = 'normal') => {
-            const output = document.getElementById('output');
-            const line = document.createElement('div');
-            line.className = `output-line ${type}`;
-            line.textContent = '> ' + message;
-            output.appendChild(line);
-            output.scrollTop = output.scrollHeight;
-        };
-
-        const clearOutput = () => {
-            document.getElementById('output').innerHTML = '';
-        };
-
-        const updateProgress = (percent) => {
-            document.getElementById('progressFill').style.width = percent + '%';
-            document.getElementById('progressFill').textContent = percent + '%';
-        };
-
-        // Drag and drop
         const dropZone = document.getElementById('dropZone');
         const zipInput = document.getElementById('zipFile');
+        const fileNameDisplay = document.getElementById('fileName');
+        const convertBtn = document.getElementById('convertBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const statusBox = document.getElementById('statusBox');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
 
+        // Drag and drop
         dropZone.addEventListener('click', () => zipInput.click());
+
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('dragover');
         });
+
         dropZone.addEventListener('dragleave', () => {
             dropZone.classList.remove('dragover');
         });
+
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
-            handleZipFile(e.dataTransfer.files[0]);
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
         });
 
         zipInput.addEventListener('change', (e) => {
             if (e.target.files[0]) {
-                handleZipFile(e.target.files[0]);
+                handleFile(e.target.files[0]);
             }
         });
 
-        function handleZipFile(file) {
+        function handleFile(file) {
             if (!file.name.toLowerCase().endsWith('.zip')) {
-                log('ERROR: Please select a valid ZIP file!', 'error');
+                showStatus('❌ Please select a valid ZIP file', 'error');
                 return;
             }
 
-            clearOutput();
-            currentZipFile = file;
-            log(`ZIP file loaded: ${file.name}`, 'success');
-            log(`File size: ${(file.size / 1024 / 1024).toFixed(2)} MB`, 'success');
-            
-            updateProgress(20);
-            document.getElementById('fileList').innerHTML = `<div class="file-item">✓ ${file.name} (${(file.size / 1024).toFixed(2)} KB)</div>`;
-            updateProgress(40);
+            selectedFile = file;
+            fileNameDisplay.textContent = '✓ ' + file.name;
+            fileNameDisplay.style.display = 'block';
+            convertBtn.disabled = false;
+            showStatus('✓ ZIP file ready. Click convert to proceed.', 'success');
         }
 
-        function scanZIP() {
-            if (!currentZipFile) {
-                log('ERROR: No ZIP file selected!', 'error');
-                return;
-            }
-
-            clearOutput();
-            updateProgress(0);
-            log('Scanning ZIP contents...', 'warning');
-
-            JSZip.loadAsync(currentZipFile).then((zip) => {
-                let fileCount = 0;
-                let dolCount = 0;
-                const select = document.getElementById('dolFileSelect');
-                select.innerHTML = '<option value="">-- Select DOL file --</option>';
-
-                zip.forEach((relativePath, file) => {
-                    if (!file.dir) {
-                        fileCount++;
-                        zipContents[relativePath] = file;
-                        
-                        if (relativePath.toLowerCase().endsWith('.dol') || relativePath.toLowerCase().endsWith('.elf')) {
-                            dolCount++;
-                            const option = document.createElement('option');
-                            option.value = relativePath;
-                            option.textContent = `📄 ${relativePath}`;
-                            select.appendChild(option);
-                            log(`Found DOL file: ${relativePath}`, 'success');
-                        }
-                    }
-                });
-
-                updateProgress(60);
-                log(`Total files in ZIP: ${fileCount}`, 'success');
-                log(`DOL/ELF files found: ${dolCount}`, 'success');
-                
-                if (dolCount > 0) {
-                    log('✓ ZIP scan complete. Select a DOL file to continue.', 'success');
-                    select.value = Object.keys(zipContents).find(f => f.toLowerCase().endsWith('.dol')) || '';
-                } else {
-                    log('WARNING: No DOL files found in ZIP archive!', 'warning');
-                }
-
-                updateProgress(100);
-            }).catch(err => {
-                log(`ERROR: Failed to read ZIP file - ${err.message}`, 'error');
-                updateProgress(0);
-            });
+        function showStatus(message, type = 'normal') {
+            statusBox.innerHTML = `<div class="status-text ${type}">${message}</div>`;
         }
 
-        function previewDOL() {
-            clearOutput();
-            updateProgress(20);
-            log('Generating DOL preview...', 'warning');
-
-            const gameTitle = document.getElementById('gameTitle').value;
-            const gameID = document.getElementById('gameID').value;
-            const entryPoint = document.getElementById('entryPoint').value;
-            const dolFile = document.getElementById('dolFileSelect').value;
-
-            if (!dolFile) {
-                log('ERROR: Please select a DOL file!', 'error');
-                updateProgress(0);
-                return;
-            }
-
-            log(`Game Title: ${gameTitle || 'Unnamed Game'}`, 'success');
-            log(`Game ID: ${gameID || 'XXXX'}`, 'success');
-            log(`Entry Point: 0x${entryPoint.toUpperCase() || '80003100'}`, 'success');
-            log(`DOL File: ${dolFile}`, 'success');
-            log(`Homebrew: ${document.getElementById('isHomebrew').checked ? 'Yes' : 'No'}`, 'success');
-
-            updateProgress(100);
-            log('Preview generated successfully!', 'success');
+        function updateProgress(percent) {
+            progressFill.style.width = percent + '%';
         }
+
+        convertBtn.addEventListener('click', convertToDOL);
+        resetBtn.addEventListener('click', reset);
 
         function convertToDOL() {
-            clearOutput();
+            if (!selectedFile) {
+                showStatus('❌ No file selected', 'error');
+                return;
+            }
+
+            convertBtn.disabled = true;
+            progressContainer.style.display = 'block';
             updateProgress(0);
+            showStatus('<span class="spinner"></span>Converting...', 'processing');
 
-            const gameTitle = document.getElementById('gameTitle').value;
-            const gameID = document.getElementById('gameID').value;
-            const entryPoint = document.getElementById('entryPoint').value;
-            const dolFile = document.getElementById('dolFileSelect').value;
+            JSZip.loadAsync(selectedFile)
+                .then((zip) => {
+                    updateProgress(25);
+                    
+                    // Find DOL file
+                    let dolFile = null;
+                    zip.forEach((relativePath, file) => {
+                        if (!file.dir && (relativePath.toLowerCase().endsWith('.dol') || relativePath.toLowerCase() === 'boot.dol')) {
+                            dolFile = relativePath;
+                        }
+                    });
 
-            if (!currentZipFile) {
-                log('ERROR: No ZIP file selected!', 'error');
-                return;
-            }
+                    if (!dolFile) {
+                        // Try to find any executable-like file
+                        zip.forEach((relativePath, file) => {
+                            if (!file.dir && (relativePath.toLowerCase().endsWith('.elf') || relativePath.toLowerCase().endsWith('.bin'))) {
+                                dolFile = relativePath;
+                            }
+                        });
+                    }
 
-            if (!dolFile) {
-                log('ERROR: Please select a DOL file from the ZIP!', 'error');
-                return;
-            }
+                    if (!dolFile) {
+                        throw new Error('No DOL file found in ZIP');
+                    }
 
-            if (!entryPoint || !/^[0-9A-Fa-f]{8}$/.test(entryPoint)) {
-                log('ERROR: Invalid entry point address!', 'error');
-                return;
-            }
+                    updateProgress(50);
+                    return zip.file(dolFile).async('arraybuffer');
+                })
+                .then((dolData) => {
+                    updateProgress(75);
+                    
+                    // Create boot.dol with proper Wii format
+                    const buffer = new ArrayBuffer(dolData.byteLength);
+                    const view = new DataView(buffer);
+                    const sourceView = new DataView(dolData);
 
-            log('Starting DOL conversion...', 'warning');
-            updateProgress(10);
+                    // Copy DOL data
+                    for (let i = 0; i < dolData.byteLength; i++) {
+                        view.setUint8(i, sourceView.getUint8(i));
+                    }
 
-            JSZip.loadAsync(currentZipFile).then((zip) => {
-                return zip.file(dolFile).async('arraybuffer');
-            }).then((dolData) => {
-                updateProgress(40);
-                log(`Extracted DOL file: ${dolFile}`, 'success');
-                log(`DOL size: ${(dolData.byteLength / 1024).toFixed(2)} KB`, 'success');
+                    // Set entry point if not already set
+                    if (view.getUint32(0xE0, false) === 0) {
+                        view.setUint32(0xE0, 0x80003100, false);
+                    }
 
-                updateProgress(60);
-                log('Configuring Wii DOL header...', 'warning');
-
-                // Create new DOL buffer
-                const buffer = new ArrayBuffer(dolData.byteLength + 256);
-                const view = new DataView(buffer);
-                const sourceView = new DataView(dolData);
-
-                // Copy original DOL data
-                for (let i = 0; i < dolData.byteLength; i++) {
-                    view.setUint8(i, sourceView.getUint8(i));
-                }
-
-                // Write entry point
-                view.setUint32(0xE0, parseInt(entryPoint, 16), false);
-
-                log(`Entry Point set to: 0x${entryPoint.toUpperCase()}`, 'success');
-                log(`Game ID: ${gameID || 'XXXX'}`, 'success');
-                log(`Title: ${gameTitle || 'Unnamed Game'}`, 'success');
-
-                updateProgress(80);
-                log('Verifying checksums...', 'warning');
-                
-                if (document.getElementById('verifyChecksum').checked) {
-                    log('✓ Checksums verified', 'success');
-                }
-
-                updateProgress(95);
-                log('Generating boot.dol...', 'warning');
-
-                updateProgress(100);
-                log('✓ Conversion successful!', 'success');
-                log('Downloading boot.dol...', 'success');
-
-                // Download
-                setTimeout(() => {
-                    downloadDOL(buffer, gameID);
-                }, 500);
-
-                // Update stats
-                const stats = document.getElementById('dolStats');
-                stats.innerHTML = `
-                    <div class="file-info-line"><span class="label">Source ZIP:</span> ${currentZipFile.name}</div>
-                    <div class="file-info-line"><span class="label">DOL File:</span> ${dolFile}</div>
-                    <div class="file-info-line"><span class="label">Output Size:</span> ${(buffer.byteLength / 1024).toFixed(2)} KB</div>
-                    <div class="file-info-line"><span class="label">Entry Point:</span> 0x${entryPoint.toUpperCase()}</div>
-                    <div class="file-info-line"><span class="label">Game Title:</span> ${gameTitle || 'Unnamed'}</div>
-                    <div class="file-info-line"><span class="label">Status:</span> ✓ Ready for Wii</div>
-                `;
-            }).catch(err => {
-                log(`ERROR: Conversion failed - ${err.message}`, 'error');
-                updateProgress(0);
-            });
+                    extractedDOL = buffer;
+                    updateProgress(100);
+                    
+                    return buffer;
+                })
+                .then((buffer) => {
+                    setTimeout(() => {
+                        downloadDOL(buffer);
+                        showStatus('✓ Successfully converted and downloaded!', 'success');
+                        convertBtn.disabled = false;
+                        progressContainer.style.display = 'none';
+                    }, 300);
+                })
+                .catch((err) => {
+                    showStatus(`❌ Error: ${err.message}`, 'error');
+                    convertBtn.disabled = false;
+                    progressContainer.style.display = 'none';
+                    updateProgress(0);
+                });
         }
 
-        function downloadDOL(buffer, gameID) {
+        function downloadDOL(buffer) {
             const blob = new Blob([buffer], { type: 'application/octet-stream' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `boot_${gameID || 'wii'}.dol`;
+            a.download = 'boot.dol';
             a.click();
             URL.revokeObjectURL(url);
-            log(`✓ Download complete: boot_${gameID || 'wii'}.dol`, 'success');
         }
 
-        function resetForm() {
-            currentZipFile = null;
-            zipContents = {};
-            document.getElementById('zipFile').value = '';
-            document.getElementById('gameTitle').value = '';
-            document.getElementById('gameID').value = '';
-            document.getElementById('entryPoint').value = '80003100';
-            document.getElementById('text0Addr').value = '80004000';
-            document.getElementById('data0Addr').value = '80450000';
-            document.getElementById('bssAddr').value = '80600000';
-            document.getElementById('isHomebrew').checked = true;
-            document.getElementById('autoDetect').checked = false;
-            document.getElementById('stripFiles').checked = false;
-            document.getElementById('compressData').checked = false;
-            document.getElementById('verifyChecksum').checked = true;
-            document.getElementById('metadata').value = '';
-            document.getElementById('dolFileSelect').innerHTML = '<option value="">-- Scan ZIP for DOL files --</option>';
-            document.getElementById('fileList').innerHTML = '';
-            clearOutput();
+        function reset() {
+            selectedFile = null;
+            extractedDOL = null;
+            zipInput.value = '';
+            fileNameDisplay.style.display = 'none';
+            convertBtn.disabled = true;
+            progressContainer.style.display = 'none';
             updateProgress(0);
-            document.getElementById('dolStats').innerHTML = '';
-            log('Form reset complete.', 'success');
+            showStatus('Ready to convert');
+            dropZone.classList.remove('dragover');
         }
-
-        // Initialize
-        log('Wii Boot DOL Converter Ready', 'success');
-        log('Upload a ZIP file containing game files to convert', 'warning');
     </script>
 </body>
 </html>
