@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNO Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .game-container {
+            max-width: 1000px;
+            width: 100%;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .game-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+
+        .game-status {
+            font-size: 18px;
+            color: #00D9FF;
+            font-weight: 600;
+        }
+
+        .game-board {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 3px solid #FFD700;
+        }
+
+        .board-section {
+            margin-bottom: 25px;
+        }
+
+        .section-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #00D9FF;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .scores {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .score-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .score-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .score-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .discard-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .discard-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #00D9FF;
+            letter-spacing: 1px;
+        }
+
+        .current-card-display {
+            width: 100px;
+            height: 140px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .deck-pile {
+            width: 100px;
+            height: 140px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .deck-pile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.5);
+        }
+
+        .hand-section {
+            margin-bottom: 20px;
+        }
+
+        .hand-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #00D9FF;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .hand {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            min-height: 160px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px dashed rgba(0, 217, 255, 0.3);
+        }
+
+        .card {
+            width: 80px;
+            height: 120px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            user-select: none;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .card.hidden {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            cursor: default;
+        }
+
+        .card.hidden:hover {
+            transform: none;
+        }
+
+        .color-red { background: linear-gradient(135deg, #FF6B6B, #EE5A52); color: white; }
+        .color-blue { background: linear-gradient(135deg, #4ECDC4, #44A08D); color: white; }
+        .color-green { background: linear-gradient(135deg, #95E1D3, #6FBF9A); color: white; }
+        .color-yellow { background: linear-gradient(135deg, #FFE66D, #F4D35E); color: #333; }
+        .color-black { background: linear-gradient(135deg, #2C3E50, #1a252f); color: white; }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700, #FFC700);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #FF6B6B, #EE5A52);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .game-info {
+            background: rgba(0, 217, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid #00D9FF;
+        }
+
+        .info-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .color-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .color-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 3px solid #FFD700;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-title {
+            font-size: 36px;
+            color: #FFD700;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .modal-text {
+            font-size: 18px;
+            color: #ddd;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 36px;
+            }
+
+            .game-board {
+                padding: 20px;
+            }
+
+            .card {
+                width: 70px;
+                height: 100px;
+                font-size: 16px;
+            }
+
+            .current-card-display {
+                width: 80px;
+                height: 120px;
+            }
+
+            .scores {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 28px;
+                letter-spacing: 1px;
+            }
+
+            .card {
+                width: 60px;
+                height: 90px;
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">🎮 UNO</h1>
+            <p class="game-status" id="gameStatus">Loading...</p>
+        </div>
+
+        <div class="game-board">
+            <!-- Scores -->
+            <div class="scores">
+                <div class="score-item">
+                    <div class="score-label">Your Cards</div>
+                    <div class="score-value" id="playerCards">7</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-label">Computer Cards</div>
+                    <div class="score-value" id="computerCards">7</div>
+                </div>
+            </div>
+
+            <!-- Current Card & Draw Pile -->
+            <div class="board-section">
+                <div class="discard-area">
+                    <div>
+                        <div class="discard-label">Deck</div>
+                        <div class="deck-pile" id="drawPile">📚</div>
+                    </div>
+                    <div>
+                        <div class="discard-label">Current Card</div>
+                        <div class="current-card-display" id="currentCard"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Computer Hand -->
+            <div class="board-section">
+                <div class="hand-label">Computer Hand</div>
+                <div class="hand" id="computerHand"></div>
+            </div>
+
+            <!-- Player Hand -->
+            <div class="board-section">
+                <div class="hand-label">Your Hand (Click to play)</div>
+                <div class="hand" id="playerHand"></div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button class="btn btn-primary" id="drawCardBtn">Draw Card</button>
+                <button class="btn btn-secondary" id="newGameBtn">New Game</button>
+            </div>
+
+            <!-- Game Info -->
+            <div class="game-info">
+                <p class="info-text">
+                    🎯 <strong>How to Play:</strong> Click on a card to play it. Match the color or number/symbol of the current card. 
+                    If you can't play, draw a card. First to empty your hand wins! Special cards: Skip, Reverse, Draw Two, Wild, Wild Draw Four.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wild Color Selector Modal -->
+    <div class="modal" id="colorModal">
+        <div class="modal-content">
+            <div class="modal-title">Pick a Color</div>
+            <p class="modal-text">You played a Wild card!</p>
+            <div class="color-selector">
+                <div class="color-btn" style="background: linear-gradient(135deg, #FF6B6B, #EE5A52);" data-color="red"></div>
+                <div class="color-btn" style="background: linear-gradient(135deg, #4ECDC4, #44A08D);" data-color="blue"></div>
+                <div class="color-btn" style="background: linear-gradient(135deg, #95E1D3, #6FBF9A);" data-color="green"></div>
+                <div class="color-btn" style="background: linear-gradient(135deg, #FFE66D, #F4D35E);" data-color="yellow"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="modal" id="gameOverModal">
+        <div class="modal-content">
+            <div class="modal-title" id="gameOverTitle">You Won!</div>
+            <p class="modal-text" id="gameOverText">Congratulations!</p>
+            <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const COLORS = ['red', 'blue', 'green', 'yellow'];
+        const ACTIONS = ['Skip', 'Reverse', 'Draw Two'];
+        
+        let gameState = {
+            deck: [],
+            discardPile: [],
+            playerHand: [],
+            computerHand: [],
+            currentColor: 'red',
+            turn: 'player',
+            gameStatus: 'Your Turn'
+        };
+
+        // DOM Elements
+        const playerHandEl = document.getElementById('playerHand');
+        const computerHandEl = document.getElementById('computerHand');
+        const currentCardEl = document.getElementById('currentCard');
+        const gameStatusEl = document.getElementById('gameStatus');
+        const playerCardsEl = document.getElementById('playerCards');
+        const computerCardsEl = document.getElementById('computerCards');
+        const drawPileEl = document.getElementById('drawPile');
+        const drawCardBtn = document.getElementById('drawCardBtn');
+        const newGameBtn = document.getElementById('newGameBtn');
+        const colorModal = document.getElementById('colorModal');
+        const gameOverModal = document.getElementById('gameOverModal');
+
+        // Initialize Game
+        function initGame() {
+            gameState.deck = createDeck();
+            gameState.discardPile = [gameState.deck.pop()];
+            gameState.playerHand = gameState.deck.splice(0, 7);
+            gameState.computerHand = gameState.deck.splice(0, 7);
+            gameState.currentColor = gameState.discardPile[0].color;
+            gameState.turn = 'player';
+            gameState.gameStatus = 'Your Turn';
+            render();
+        }
+
+        function createDeck() {
+            let deck = [];
+            let id = 0;
+
+            // Number cards
+            COLORS.forEach(color => {
+                for (let num = 0; num <= 9; num++) {
+                    if (num === 0) {
+                        deck.push({ id: id++, type: 'number', color, number: num });
+                    } else {
+                        deck.push({ id: id++, type: 'number', color, number: num });
+                        deck.push({ id: id++, type: 'number', color, number: num });
+                    }
+                }
+            });
+
+            // Action cards
+            COLORS.forEach(color => {
+                ACTIONS.forEach(action => {
+                    deck.push({ id: id++, type: 'action', color, action });
+                    deck.push({ id: id++, type: 'action', color, action });
+                });
+            });
+
+            // Wild cards
+            for (let i = 0; i < 4; i++) {
+                deck.push({ id: id++, type: 'wild', color: 'black', action: 'Wild' });
+                deck.push({ id: id++, type: 'wild', color: 'black', action: 'Wild Draw Four' });
+            }
+
+            return deck.sort(() => Math.random() - 0.5);
+        }
+
+        function canPlayCard(card) {
+            const lastCard = gameState.discardPile[gameState.discardPile.length - 1];
+            if (card.type === 'wild') return true;
+            if (card.color === gameState.currentColor) return true;
+            if (card.type === 'number' && card.number === lastCard.number) return true;
+            if (card.type === 'action' && card.action === lastCard.action) return true;
+            return false;
+        }
+
+        function playCard(card) {
+            if (gameState.turn !== 'player') {
+                return;
+            }
+
+            if (!canPlayCard(card)) {
+                alert('Cannot play this card!');
+                return;
+            }
+
+            // Remove from hand
+            gameState.playerHand = gameState.playerHand.filter(c => c.id !== card.id);
+            gameState.discardPile.push(card);
+            gameState.currentColor = card.color;
+
+            if (card.type === 'wild') {
+                showColorModal();
+            }
+
+            if (gameState.playerHand.length === 0) {
+                endGame(true);
+                return;
+            }
+
+            gameState.turn = 'computer';
+            gameState.gameStatus = 'Computer\'s Turn';
+            render();
+            setTimeout(computerTurn, 1000);
+        }
+
+        function computerTurn() {
+            const playable = gameState.computerHand.filter(c => canPlayCard(c));
+
+            if (playable.length === 0) {
+                // Draw card
+                if (gameState.deck.length > 0) {
+                    gameState.computerHand.push(gameState.deck.pop());
+                }
+                gameState.turn = 'player';
+                gameState.gameStatus = 'Your Turn';
+                render();
+                return;
+            }
+
+            const card = playable[Math.floor(Math.random() * playable.length)];
+            gameState.computerHand = gameState.computerHand.filter(c => c.id !== card.id);
+            gameState.discardPile.push(card);
+            gameState.currentColor = card.color;
+
+            if (card.type === 'wild') {
+                gameState.currentColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+            }
+
+            if (gameState.computerHand.length === 0) {
+                endGame(false);
+                return;
+            }
+
+            gameState.turn = 'player';
+            gameState.gameStatus = 'Your Turn';
+            render();
+        }
+
+        function drawCard() {
+            if (gameState.turn !== 'player') {
+                alert('Not your turn!');
+                return;
+            }
+
+            if (gameState.deck.length === 0) {
+                alert('No more cards in deck!');
+                return;
+            }
+
+            gameState.playerHand.push(gameState.deck.pop());
+            gameState.turn = 'computer';
+            gameState.gameStatus = 'Computer\'s Turn';
+            render();
+            setTimeout(computerTurn, 1000);
+        }
+
+        function endGame(playerWon) {
+            const title = document.getElementById('gameOverTitle');
+            const text = document.getElementById('gameOverText');
+            
+            if (playerWon) {
+                title.textContent = '🎉 You Won!';
+                text.textContent = 'Congratulations! You defeated the computer!';
+            } else {
+                title.textContent = '😢 Game Over';
+                text.textContent = 'The computer won. Better luck next time!';
+            }
+            
+            gameOverModal.classList.add('show');
+        }
+
+        function showColorModal() {
+            colorModal.classList.add('show');
+        }
+
+        function getColorClass(color) {
+            return `color-${color}`;
+        }
+
+        function getCardDisplay(card) {
+            if (card.type === 'number') {
+                return card.number.toString();
+            } else if (card.type === 'action') {
+                return card.action === 'Skip' ? '⏭️' : card.action === 'Reverse' ? '↩️' : '📥';
+            } else {
+                return card.action === 'Wild' ? '🌈' : '🌈+4';
+            }
+        }
+
+        function render() {
+            // Update status
+            gameStatusEl.textContent = gameState.gameStatus;
+
+            // Update card counts
+            playerCardsEl.textContent = gameState.playerHand.length;
+            computerCardsEl.textContent = gameState.computerHand.length;
+
+            // Update current card
+            const lastCard = gameState.discardPile[gameState.discardPile.length - 1];
+            currentCardEl.textContent = getCardDisplay(lastCard);
+            currentCardEl.className = `current-card-display ${getColorClass(gameState.currentColor)}`;
+
+            // Update player hand
+            playerHandEl.innerHTML = gameState.playerHand.map((card, idx) => `
+                <div class="card ${getColorClass(card.color)}" onclick="playCard(gameState.playerHand[${idx}])">
+                    ${getCardDisplay(card)}
+                </div>
+            `).join('');
+
+            // Update computer hand
+            computerHandEl.innerHTML = gameState.computerHand.map(() => `
+                <div class="card hidden">?</div>
+            `).join('');
+
+            // Update draw pile
+            drawPileEl.textContent = gameState.deck.length > 0 ? gameState.deck.length : '0';
+        }
+
+        // Event Listeners
+        drawCardBtn.addEventListener('click', drawCard);
+        newGameBtn.addEventListener('click', () => {
+            colorModal.classList.remove('show');
+            gameOverModal.classList.remove('show');
+            initGame();
+        });
+
+        // Color selection
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                gameState.currentColor = e.target.dataset.color;
+                colorModal.classList.remove('show');
+                gameState.turn = 'computer';
+                gameState.gameStatus = 'Computer\'s Turn';
+                render();
+                setTimeout(computerTurn, 1000);
+            });
+        });
+
+        // Start game
+        initGame();
+    </script>
+</body>
+</html>
